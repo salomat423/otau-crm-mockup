@@ -36,6 +36,11 @@ export function render() {
         state.setRole(v);
         window.location.hash = "#/dashboard";
         render();
+        const header = document.querySelector(".header");
+        if (header) {
+          header.classList.add("is-role-switching");
+          setTimeout(() => header.classList.remove("is-role-switching"), 280);
+        }
       }
     };
   }

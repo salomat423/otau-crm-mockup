@@ -155,7 +155,12 @@
 
 .card--clickable:hover {
   border-color: var(--border-strong);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.card--clickable:active {
+  transform: translateY(-1px);
 }
 
 /* ========== Grid ========== */
@@ -454,8 +459,16 @@
 }
 
 .kanban-col--drop {
-  background: var(--accent-soft);
-  border-color: rgba(43, 95, 255, 0.35);
+  background:
+    linear-gradient(110deg,
+      rgba(31, 79, 168, 0.10) 0%,
+      rgba(31, 79, 168, 0.18) 40%,
+      rgba(31, 79, 168, 0.05) 60%,
+      rgba(31, 79, 168, 0.18) 100%);
+  background-size: 200% 100%;
+  border-color: rgba(31, 79, 168, 0.35);
+  box-shadow: var(--shadow-glow-primary);
+  animation: shimmer 1.6s linear infinite;
 }
 
 .kanban-col__head {
