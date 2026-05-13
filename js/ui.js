@@ -100,4 +100,47 @@ export function sparkline(values, opts = {}) {
   </svg>`;
 }
 
+/* ============================================================
+   Avatar — детерминированный hue из имени (redesign 1.4)
+   ============================================================ */
+function hashHue(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) h = (h * 31 + str.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+
+function initials(name) {
+  const parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return "?";
+  if (parts.length === 1) return parts[0].slice(0, 2);
+  return (parts[0][0] || "") + (parts[1][0] || "");
+}
+
+/**
+ * @param {string} name
+ * @param {{ size?: 'sm'|'md'|'lg', title?: string }} [opts]
+ */
+export function avatarHtml(name, opts = {}) {
+  const hue = hashHue(String(name || ""));
+  const sizeCls = opts.size === "sm" ? " avatar--sm" : opts.size === "lg" ? " avatar--lg" : "";
+  const title = opts.title ?? name ?? "";
+  return `<span class="avatar${sizeCls}" style="--av-hue:${hue}" title="${escapeHtml(title)}">${escapeHtml(initials(name))}</span>`;
+}
+
+/* ============================================================
+   Empty state — иллюстрированный плейсхолдер (redesign 1.4)
+   ============================================================ */
+/**
+ * @param {{ icon?: string, title: string, hint?: string, action?: string }} opts
+ */
+export function emptyState({ icon, title, hint, action } = { title: "" }) {
+  return `
+  <div class="empty-state">
+    <div class="empty-state__icon">${icon || Icon.sparkles}</div>
+    <div class="empty-state__title">${escapeHtml(title)}</div>
+    ${hint ? `<div class="empty-state__hint">${hint}</div>` : ""}
+    ${action ? `<div class="empty-state__action">${action}</div>` : ""}
+  </div>`;
+}
+
 export { Icon };

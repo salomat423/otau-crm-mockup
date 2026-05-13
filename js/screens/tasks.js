@@ -1,5 +1,5 @@
 import * as state from "../state.js";
-import { escapeHtml, Icon, openModal, showToast } from "../ui.js";
+import { escapeHtml, Icon, openModal, showToast, emptyState } from "../ui.js";
 
 /** @param {import('../state.js').Task} t */
 function enrichTask(t) {
@@ -133,10 +133,12 @@ export function render() {
   </div>
 
   ${tasks.length === 0
-    ? `<div class="card"><div class="empty-state">
-        ${Icon.task}
-        <p style="margin-top:8px">Пока пусто. Откройте <a href="#/ai-advisor">ИИ-советника</a> и нажмите «Принять — создать задачу».</p>
-      </div></div>`
+    ? `<div class="card">${emptyState({
+        icon: Icon.task,
+        title: "Пока нет задач",
+        hint: "Откройте ИИ-советника и нажмите «Принять — создать задачу», либо создайте задачу из карточки сделки.",
+        action: `<a class="btn btn--primary btn--sm" href="#/ai-advisor">К ИИ-советнику</a>`,
+      })}</div>`
     : `<div class="card" style="padding:0">
       ${tasks
         .map(

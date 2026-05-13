@@ -1,5 +1,5 @@
 import { STAGES, deals, FUNNEL_TABS, SOURCES, managerName, managers, complexes, complexName } from "../data.js";
-import { Icon, showToast, escapeHtml } from "../ui.js";
+import { Icon, showToast, escapeHtml, avatarHtml, emptyState } from "../ui.js";
 
 let funnelTab = "active";
 let filters = { manager: "", source: "", complex: "", period: "all" };
@@ -20,12 +20,15 @@ function dealTile(d) {
   <a class="deal-tile" data-deal-id="${d.id}" draggable="true" href="#/deal/${d.id}">
     <button type="button" class="deal-tile__menu btn btn--ghost btn--sm" data-move-menu="${d.id}" aria-label="Перенести на этап">${Icon.more}</button>
     <div class="deal-tile__top">
-      <span class="deal-tile__name">${escapeHtml(d.clientName)}</span>
+      <span class="row" style="gap:8px;min-width:0;flex:1">
+        ${avatarHtml(d.clientName, { size: "sm" })}
+        <span class="deal-tile__name">${escapeHtml(d.clientName)}</span>
+      </span>
       <span class="deal-tile__ai-dot ${aiDotClass(d.ai)}" title="ИИ: ${d.ai}"></span>
     </div>
     <div class="deal-tile__obj">${escapeHtml(complexName(d.complexId))} · ${d.rooms}к · ${escapeHtml(d.source)}</div>
     <div class="deal-tile__bot">
-      <span class="deal-tile__amount">${d.amountMln} млн ₸</span>
+      <span class="deal-tile__amount mono-num">${d.amountMln} млн ₸</span>
       <span class="deal-tile__manager">${escapeHtml(managerName(d.managerId))}</span>
     </div>
   </a>`;
@@ -73,7 +76,7 @@ export function render() {
             <span class="kanban-col__count">${cards.length}</span>
           </div>
           <div class="kanban-col__body" data-drop="${st.id}">
-            ${cards.map(dealTile).join("") || `<div class="empty-state" style="padding:14px;font-size:12px">Пусто</div>`}
+            ${cards.map(dealTile).join("") || emptyState({ icon: Icon.funnel, title: "Здесь пока пусто", hint: "Перетащите сделку или измените фильтры" })}
           </div>
         </div>`;
       }).join("")}
@@ -98,7 +101,7 @@ export function render() {
             .join("")}
         </tbody>
       </table>
-      ${list.length === 0 ? `<div class="empty-state">Нет сделок по выбранным фильтрам</div>` : ""}
+      ${list.length === 0 ? emptyState({ icon: Icon.funnel, title: "Сделок не нашлось", hint: "Попробуйте сбросить фильтры или переключить вкладку." }) : ""}
     </div>`;
   }
 

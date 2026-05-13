@@ -1,6 +1,6 @@
 import * as state from "../state.js";
 import { deals, complexes, managers, managerName } from "../data.js";
-import { Icon, sparkline, escapeHtml } from "../ui.js";
+import { Icon, sparkline, escapeHtml, avatarHtml } from "../ui.js";
 
 /* ---------- shared helpers ---------- */
 function kpi({ label, value, unit, delta, sub, spark, tone = "neutral" }) {
@@ -143,13 +143,14 @@ function ropDashboard() {
             const cls = m.score >= 8 ? "badge--green" : m.score >= 7 ? "badge--blue" : m.score >= 6 ? "badge--yellow" : "badge--red";
             return `
           <div class="list-item">
-            <span class="row">
-              <span style="width:18px;color:var(--text-muted)">${i + 1}</span>
+            <span class="row" style="gap:10px">
+              <span style="width:18px;color:var(--text-muted);font-variant-numeric:tabular-nums">${i + 1}</span>
+              ${avatarHtml(m.name, { size: "sm" })}
               <a href="#/funnel?manager=${m.id}">${escapeHtml(m.name)}</a>
             </span>
             <span class="row">
               <span style="opacity:0.7">${sparkline(m.trend, { w: 90, h: 22 })}</span>
-              <span class="badge ${cls}">${m.score}</span>
+              <span class="badge ${cls} mono-num">${m.score}</span>
             </span>
           </div>`;
           })

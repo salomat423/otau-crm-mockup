@@ -263,45 +263,61 @@
   display: block;
 }
 
-/* ========== Badge ========== */
+/* ========== Badge (redesign 1.4: pill, matching-цвета) ========== */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
-  font-size: 11.5px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   background: var(--bg-subtle);
   color: var(--text-secondary);
   border: 1px solid var(--border);
   line-height: 1.6;
+  white-space: nowrap;
 }
 
-.badge--green {
+.badge--green,
+.badge--success {
   background: var(--success-soft);
-  color: var(--success);
-  border-color: rgba(22, 163, 74, 0.15);
+  color: var(--success-strong, var(--success));
+  border-color: rgba(31, 138, 82, 0.18);
 }
-.badge--yellow {
+.badge--yellow,
+.badge--warning {
   background: var(--warning-soft);
-  color: var(--warning);
-  border-color: rgba(217, 119, 6, 0.15);
+  color: var(--warning-strong, var(--warning));
+  border-color: rgba(217, 138, 11, 0.20);
 }
-.badge--red {
+.badge--red,
+.badge--danger {
   background: var(--danger-soft);
-  color: var(--danger);
-  border-color: rgba(220, 38, 38, 0.15);
+  color: var(--danger-strong, var(--danger));
+  border-color: rgba(200, 38, 30, 0.20);
 }
-.badge--blue {
+.badge--blue,
+.badge--primary {
   background: var(--accent-soft);
   color: var(--accent);
-  border-color: rgba(43, 95, 255, 0.18);
+  border-color: rgba(31, 79, 168, 0.20);
 }
 .badge--info {
   background: var(--info-soft);
-  color: var(--info);
-  border-color: rgba(14, 165, 233, 0.15);
+  color: var(--info-strong, var(--info));
+  border-color: rgba(31, 79, 168, 0.18);
+}
+.badge--neutral {
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+  border-color: var(--neutral-200);
+}
+.badge--solid {
+  background: var(--accent);
+  color: #fff;
+  border-color: transparent;
 }
 
 .dot {
@@ -1072,4 +1088,87 @@
   align-items: center;
   flex-wrap: wrap;
   justify-content: space-between;
+}
+
+/* ========== Avatar (redesign 1.4: уникальный hue из hash имени) ========== */
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, hsl(var(--av-hue, 220) 65% 50%), hsl(var(--av-hue, 220) 70% 35%));
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(11, 14, 22, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+}
+.avatar--sm { width: 24px; height: 24px; font-size: 10px; }
+.avatar--lg { width: 44px; height: 44px; font-size: 15px; }
+
+/* ========== Progress bar (redesign 1.4: анимированный fill) ========== */
+.progress {
+  display: block;
+  height: 8px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  position: relative;
+}
+.progress__fill {
+  display: block;
+  height: 100%;
+  width: var(--p, 0%);
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+  border-radius: inherit;
+  transform-origin: left center;
+  animation: fillBar 700ms var(--ease) backwards;
+}
+.progress--success .progress__fill { background: linear-gradient(90deg, var(--success), #57c08a); }
+.progress--warning .progress__fill { background: linear-gradient(90deg, var(--warning), #f1b15a); }
+.progress--danger  .progress__fill { background: linear-gradient(90deg, var(--accent-red-500), var(--accent-red-300)); }
+
+/* ========== Empty state (redesign 1.4: иллюстрированный) ========== */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 32px 24px;
+  color: var(--text-muted);
+  gap: 10px;
+}
+.empty-state__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-50), var(--accent-soft));
+  color: var(--accent);
+  margin-bottom: 4px;
+  box-shadow: inset 0 0 0 1px rgba(31, 79, 168, 0.10);
+}
+.empty-state__icon svg { width: 24px; height: 24px; }
+.empty-state__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.empty-state__hint {
+  font-size: 13px;
+  color: var(--text-muted);
+  max-width: 360px;
+  line-height: 1.55;
+}
+.empty-state__action {
+  margin-top: 6px;
 }

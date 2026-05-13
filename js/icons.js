@@ -31,4 +31,11 @@ export const Icon = {
   briefing: stroke(`<path d="M3 11a4 4 0 0 1 8 0v4"/><path d="M3 11v5h5v5"/><path d="M13 5a4 4 0 0 1 8 0v10a4 4 0 0 1-8 0z"/>`),
   voice: stroke(`<rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v3"/>`),
   briefcase: stroke(`<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>`),
+  search: stroke(`<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>`),
+  bell: stroke(`<path d="M6 8a6 6 0 1 1 12 0c0 7 3 7 3 9H3c0-2 3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/>`),
+  plus: stroke(`<path d="M12 5v14M5 12h14"/>`),
+  download: stroke(`<path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/>`),
+  logout: stroke(`<path d="M15 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 17l-5-5 5-5"/><path d="M5 12h11"/>`),
+  deal: stroke(`<rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 10h18"/><path d="M9 14h6"/>`),
+  building: stroke(`<rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/>`),
 };

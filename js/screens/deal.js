@@ -1,6 +1,6 @@
 import * as state from "../state.js";
 import { STAGES, getDeal, dealDetail, managerName, complexName } from "../data.js";
-import { Icon, escapeHtml, showToast, openModal } from "../ui.js";
+import { Icon, escapeHtml, showToast, openModal, avatarHtml, emptyState } from "../ui.js";
 
 function iconForType(type) {
   if (type === "wa") return { icon: Icon.message, cls: "tl-icon--in", label: "WhatsApp" };
@@ -139,9 +139,12 @@ export function render(dealId) {
   </div>
 
   <div class="page-head">
-    <div>
-      <div class="page-head__title">${escapeHtml(d.clientName)}</div>
-      <div class="page-head__sub">${escapeHtml(complexName(d.complexId))} · ${d.rooms}к · ${d.amountMln} млн ₸</div>
+    <div class="row" style="gap:14px;align-items:center">
+      ${avatarHtml(d.clientName, { size: "lg" })}
+      <div>
+        <div class="page-head__title">${escapeHtml(d.clientName)}</div>
+        <div class="page-head__sub">${escapeHtml(complexName(d.complexId))} · ${d.rooms}к · ${d.amountMln} млн ₸</div>
+      </div>
     </div>
     <div class="btn-group">
       <button type="button" class="btn btn--sm">Поставить задачу</button>
