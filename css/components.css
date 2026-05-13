@@ -107,6 +107,22 @@
   border-radius: var(--radius);
   padding: 18px;
   box-shadow: var(--shadow-xs);
+  position: relative;
+}
+
+/* Glassmorphism-варианты карточек (redesign 1.1) */
+.card--glass {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  box-shadow: var(--shadow-sm);
+}
+
+.card--glass-strong {
+  background: var(--glass-bg-strong);
+  backdrop-filter: saturate(160%) blur(20px);
+  -webkit-backdrop-filter: saturate(160%) blur(20px);
 }
 
 .card__head {
@@ -162,17 +178,33 @@
   gap: 16px;
 }
 
-/* ========== Stat / KPI ========== */
+/* ========== Stat / KPI (redesign 1.1: верхняя цветная полоса по data-tone) ========== */
 .kpi {
   background: var(--bg-surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: 18px 18px 16px;
   box-shadow: var(--shadow-xs);
   display: flex;
   flex-direction: column;
   gap: 8px;
+  position: relative;
+  overflow: hidden;
 }
+
+.kpi::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--kpi-strip-neutral);
+  opacity: 0.9;
+}
+.kpi[data-tone="primary"]::before { background: var(--kpi-strip-primary); }
+.kpi[data-tone="success"]::before { background: var(--kpi-strip-success); }
+.kpi[data-tone="warning"]::before { background: var(--kpi-strip-warning); }
+.kpi[data-tone="danger"]::before  { background: var(--kpi-strip-danger);  }
+.kpi[data-tone="neutral"]::before { background: var(--kpi-strip-neutral); }
 
 .kpi__label {
   font-size: 12px;

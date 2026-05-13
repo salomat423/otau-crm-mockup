@@ -105,4 +105,19 @@
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --t-fast: 120ms;
   --t-med: 180ms;
+
+  /* ========== Glass / Glow / KPI strips (redesign 1.1) ========== */
+  --glass-bg: rgba(255, 255, 255, 0.72);
+  --glass-bg-strong: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.6);
+
+  --shadow-glow-primary: 0 0 0 1px rgba(31, 79, 168, 0.18), 0 8px 22px -10px rgba(31, 79, 168, 0.45);
+  --shadow-glow-danger:  0 0 0 1px rgba(200, 38, 30, 0.18), 0 8px 22px -10px rgba(200, 38, 30, 0.45);
+  --shadow-glow-success: 0 0 0 1px rgba(31, 138, 82, 0.18), 0 8px 22px -10px rgba(31, 138, 82, 0.45);
+
+  --kpi-strip-primary: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+  --kpi-strip-success: linear-gradient(90deg, var(--success), #57c08a);
+  --kpi-strip-warning: linear-gradient(90deg, var(--warning), #f1b15a);
+  --kpi-strip-danger:  linear-gradient(90deg, var(--accent-red-500), var(--accent-red-300));
+  --kpi-strip-neutral: linear-gradient(90deg, var(--neutral-600), var(--neutral-300));
 }

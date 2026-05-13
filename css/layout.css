@@ -3,11 +3,14 @@
   min-height: 100vh;
 }
 
-/* SIDEBAR */
+/* SIDEBAR — mesh-gradient + SVG-noise (redesign 1.1) */
 .sidebar {
   width: var(--sidebar-w);
   flex-shrink: 0;
-  background: var(--bg-surface);
+  background:
+    radial-gradient(120% 70% at -10% 0%, rgba(31, 79, 168, 0.10) 0%, transparent 55%),
+    radial-gradient(80% 60% at 110% 100%, rgba(200, 38, 30, 0.06) 0%, transparent 50%),
+    linear-gradient(180deg, var(--neutral-0) 0%, #FBFCFE 100%);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -15,6 +18,19 @@
   position: sticky;
   top: 0;
   height: 100vh;
+  isolation: isolate;
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12 0 0 0 0 0.18 0 0 0 0 0.32 0 0 0 0.06 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 160px 160px;
+  mix-blend-mode: multiply;
 }
 
 .sidebar__brand {
@@ -63,22 +79,36 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 8px 10px;
-  border-radius: 8px;
+  padding: 9px 12px;
+  border-radius: 9px;
   color: var(--text-secondary);
   font-weight: 500;
   font-size: 13.5px;
-  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+  position: relative;
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease), transform var(--t-fast) var(--ease);
 }
 
 .nav-link:hover {
-  background: var(--bg-subtle);
+  background: rgba(31, 79, 168, 0.06);
   color: var(--text);
 }
 
 .nav-link--active {
-  background: var(--accent-soft);
+  background: linear-gradient(90deg, rgba(31, 79, 168, 0.12) 0%, rgba(31, 79, 168, 0.04) 100%);
   color: var(--accent);
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.nav-link--active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 3px 3px 0;
+  background: linear-gradient(180deg, var(--primary-500), var(--primary-700));
 }
 
 .nav-link--active .nav-link__icon {

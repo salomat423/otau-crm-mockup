@@ -3,13 +3,13 @@ import { deals, complexes, managers, managerName } from "../data.js";
 import { Icon, sparkline, escapeHtml } from "../ui.js";
 
 /* ---------- shared helpers ---------- */
-function kpi({ label, value, unit, delta, sub, spark }) {
+function kpi({ label, value, unit, delta, sub, spark, tone = "neutral" }) {
   const deltaHtml = delta
     ? `<span class="kpi__delta kpi__delta--${delta.dir}">${delta.dir === "up" ? "▲" : "▼"} ${escapeHtml(delta.text)}</span>`
     : "";
   const sparkHtml = spark ? sparkline(spark, { w: 220, h: 36 }) : "";
   return `
-  <div class="kpi">
+  <div class="kpi" data-tone="${escapeHtml(tone)}">
     <div class="kpi__label">${escapeHtml(label)}</div>
     <div class="kpi__value">
       <span class="kpi__num">${escapeHtml(value)}</span>
@@ -29,9 +29,9 @@ function managerDashboard() {
 
   return `
   <div class="grid grid-3">
-    ${kpi({ label: "Активных сделок", value: my.length, sub: "По воронке: " + byStage.join(" · "), spark: byStage.map((x) => x + 1) })}
-    ${kpi({ label: "Балл качества (ИИ)", value: "8.2", unit: "/10", delta: { dir: "up", text: "+0.3 за неделю" }, spark: [7.6, 7.8, 7.9, 8.0, 8.1, 8.0, 8.2] })}
-    ${kpi({ label: "Новые лиды (день)", value: 5, sub: "Распределено на вас: 2" })}
+    ${kpi({ label: "Активных сделок", value: my.length, sub: "По воронке: " + byStage.join(" · "), spark: byStage.map((x) => x + 1), tone: "primary" })}
+    ${kpi({ label: "Балл качества (ИИ)", value: "8.2", unit: "/10", delta: { dir: "up", text: "+0.3 за неделю" }, spark: [7.6, 7.8, 7.9, 8.0, 8.1, 8.0, 8.2], tone: "success" })}
+    ${kpi({ label: "Новые лиды (день)", value: 5, sub: "Распределено на вас: 2", tone: "warning" })}
   </div>
 
   <div class="split-2">
@@ -110,10 +110,10 @@ function ropDashboard() {
   const trend = [142, 158, 167, 175, 173, 180, 187];
   return `
   <div class="grid grid-4">
-    ${kpi({ label: "Лиды (неделя)", value: 187, delta: { dir: "up", text: "+12%" }, spark: trend })}
-    ${kpi({ label: "Закрытий", value: 14, sub: "312 млн ₸", spark: [9, 11, 10, 13, 12, 13, 14] })}
-    ${kpi({ label: "SLA-нарушений", value: 23, delta: { dir: "down", text: "−4" }, spark: [30, 28, 27, 25, 24, 22, 23], unit: "" })}
-    ${kpi({ label: "На грани срыва", value: 8, sub: "Холодеют 5+ дней без коммуникаций" })}
+    ${kpi({ label: "Лиды (неделя)", value: 187, delta: { dir: "up", text: "+12%" }, spark: trend, tone: "primary" })}
+    ${kpi({ label: "Закрытий", value: 14, sub: "312 млн ₸", spark: [9, 11, 10, 13, 12, 13, 14], tone: "success" })}
+    ${kpi({ label: "SLA-нарушений", value: 23, delta: { dir: "down", text: "−4" }, spark: [30, 28, 27, 25, 24, 22, 23], unit: "", tone: "warning" })}
+    ${kpi({ label: "На грани срыва", value: 8, sub: "Холодеют 5+ дней без коммуникаций", tone: "danger" })}
   </div>
 
   <div class="split-2">
@@ -208,10 +208,10 @@ function ownerDashboard() {
   </div>
 
   <div class="grid grid-4">
-    ${kpi({ label: "План/факт мес.", value: "92%", sub: "Прогноз: на треке", spark: [85, 88, 90, 91, 92] })}
-    ${kpi({ label: "Средний чек", value: "36.2", unit: "млн ₸", delta: { dir: "up", text: "+4%" }, spark: [33, 34, 34.5, 35, 36, 36.2] })}
-    ${kpi({ label: "ROMI", value: "3.1×", delta: { dir: "down", text: "−0.3×" }, spark: [3.4, 3.3, 3.2, 3.1, 3.1] })}
-    ${kpi({ label: "Балл отдела", value: "7.4", unit: "/10", sub: "Текучка в норме", spark: [7.1, 7.2, 7.3, 7.3, 7.4] })}
+    ${kpi({ label: "План/факт мес.", value: "92%", sub: "Прогноз: на треке", spark: [85, 88, 90, 91, 92], tone: "primary" })}
+    ${kpi({ label: "Средний чек", value: "36.2", unit: "млн ₸", delta: { dir: "up", text: "+4%" }, spark: [33, 34, 34.5, 35, 36, 36.2], tone: "success" })}
+    ${kpi({ label: "ROMI", value: "3.1×", delta: { dir: "down", text: "−0.3×" }, spark: [3.4, 3.3, 3.2, 3.1, 3.1], tone: "danger" })}
+    ${kpi({ label: "Балл отдела", value: "7.4", unit: "/10", sub: "Текучка в норме", spark: [7.1, 7.2, 7.3, 7.3, 7.4], tone: "primary" })}
   </div>
 
   <div class="split-2">
