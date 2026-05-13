@@ -1,0 +1,108 @@
+:root {
+  /* ========== OTAU Brand · Primary (синий из логотипа) ========== */
+  --primary-50:  #EEF3FB;
+  --primary-100: #D6E2F4;
+  --primary-200: #ADC4E9;
+  --primary-300: #7FA0D8;
+  --primary-400: #4B78C2;
+  --primary-500: #1F4FA8;
+  --primary-600: #173E8C;
+  --primary-700: #122F6D;
+  --primary-800: #0D2350;
+  --primary-900: #081636;
+
+  /* ========== OTAU Brand · Accent (красный «GR» из логотипа) ========== */
+  --accent-red-50:  #FDECEC;
+  --accent-red-100: #FAD0D0;
+  --accent-red-200: #F4A1A1;
+  --accent-red-300: #EC6F6F;
+  --accent-red-400: #DD3F3F;
+  --accent-red-500: #C8261E;
+  --accent-red-600: #A71D17;
+  --accent-red-700: #821611;
+  --accent-red-800: #5C0F0C;
+
+  /* ========== Neutrals (холодный синеватый подтон) ========== */
+  --neutral-0:   #FFFFFF;
+  --neutral-50:  #F7F8FA;
+  --neutral-100: #EFF1F5;
+  --neutral-200: #E2E5EC;
+  --neutral-300: #C9CED8;
+  --neutral-400: #9BA3B2;
+  --neutral-500: #6B7384;
+  --neutral-600: #4A5160;
+  --neutral-700: #2F3542;
+  --neutral-800: #1B1F2A;
+  --neutral-900: #0B0E16;
+
+  /* ========== Aliases — поверхности ========== */
+  --bg-app: var(--neutral-50);
+  --bg-surface: var(--neutral-0);
+  --bg-subtle: var(--neutral-100);
+  --bg-muted: #F2F4F8;
+
+  /* ========== Aliases — текст ========== */
+  --text: var(--neutral-800);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-500);
+  --text-faint: var(--neutral-400);
+
+  /* ========== Aliases — границы ========== */
+  --border: var(--neutral-200);
+  --border-strong: var(--neutral-300);
+
+  /* ========== Brand / accent (основной — синий) ========== */
+  --accent: var(--primary-500);
+  --accent-hover: var(--primary-600);
+  --accent-pressed: var(--primary-700);
+  --accent-soft: var(--primary-50);
+  --accent-ring: rgba(31, 79, 168, 0.18);
+
+  /* Brand red — точечный акцент (CTA «Позвонить», «Скидка», «Срочно») */
+  --brand-red: var(--accent-red-500);
+  --brand-red-hover: var(--accent-red-600);
+  --brand-red-soft: var(--accent-red-50);
+
+  /* ========== Семантика ========== */
+  --success: #1F8A52;
+  --success-soft: #E6F4EC;
+  --success-strong: #156238;
+
+  --warning: #D98A0B;
+  --warning-soft: #FFF4E0;
+  --warning-strong: #9A6108;
+
+  --danger: var(--accent-red-500);
+  --danger-soft: var(--accent-red-50);
+  --danger-strong: var(--accent-red-700);
+
+  --info: var(--primary-500);
+  --info-soft: #E6EEFB;
+  --info-strong: var(--primary-700);
+
+  /* ========== Эффекты ========== */
+  --radius-sm: 6px;
+  --radius: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-pill: 999px;
+
+  --shadow-xs: 0 1px 0 rgba(11, 14, 22, 0.03);
+  --shadow-sm: 0 1px 2px rgba(11, 14, 22, 0.04), 0 1px 1px rgba(11, 14, 22, 0.03);
+  --shadow-md: 0 4px 12px -2px rgba(11, 14, 22, 0.06), 0 2px 4px rgba(11, 14, 22, 0.04);
+  --shadow-lg: 0 12px 28px -8px rgba(11, 14, 22, 0.12), 0 4px 8px rgba(11, 14, 22, 0.04);
+  --shadow-brand: 0 8px 24px rgba(31, 79, 168, 0.18);
+
+  --font: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  /* ========== Layout ========== */
+  --sidebar-w: 240px;
+  --header-h: 60px;
+  --content-pad: 28px;
+
+  /* ========== Motion ========== */
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 120ms;
+  --t-med: 180ms;
+}
