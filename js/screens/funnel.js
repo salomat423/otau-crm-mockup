@@ -1,8 +1,36 @@
 import { STAGES, deals, FUNNEL_TABS, SOURCES, managerName, managers, complexes, complexName } from "../data.js";
+import * as state from "../state.js";
 import { Icon, showToast, escapeHtml, avatarHtml, emptyState } from "../ui.js";
 
 let funnelTab = "active";
-let filters = { manager: "", source: "", complex: "", period: "all" };
+
+/* Фильтры читаются из hash-query (2.4). Запись — через writeFiltersToUrl(). */
+function readFiltersFromUrl() {
+  const q = state.parseRoute().query || {};
+  return {
+    manager: q.manager || "",
+    complex: q.complex || "",
+    source: q.source || "",
+    period: q.period || "all",
+  };
+}
+
+function writeFiltersToUrl(f) {
+  const params = new URLSearchParams();
+  if (f.manager) params.set("manager", f.manager);
+  if (f.complex) params.set("complex", f.complex);
+  if (f.source) params.set("source", f.source);
+  if (f.period && f.period !== "all") params.set("period", f.period);
+  const qs = params.toString();
+  const newHash = "#/funnel" + (qs ? "?" + qs : "");
+  if (window.location.hash !== newHash) {
+    history.replaceState(null, "", newHash);
+  }
+}
+
+function hasActiveFilters(f) {
+  return Boolean(f.manager || f.complex || f.source || (f.period && f.period !== "all"));
+}
 
 function aiStripText() {
   if (funnelTab !== "active")
@@ -34,8 +62,7 @@ function dealTile(d) {
   </a>`;
 }
 
-function filteredDeals() {
-  const now = new Date();
+function filteredDeals(filters) {
   return deals.filter((d) => {
     if (d.tab !== funnelTab) return false;
     if (filters.manager && d.managerId !== filters.manager) return false;
@@ -48,16 +75,14 @@ function filteredDeals() {
 }
 
 export function render() {
-  const params = new URLSearchParams(window.location.hash.split("?")[1] || "");
-  if (params.has("manager")) filters.manager = params.get("manager") || "";
-  if (params.has("complex")) filters.complex = params.get("complex") || "";
+  const filters = readFiltersFromUrl();
 
   const tabsHtml = FUNNEL_TABS.map(
     (t) =>
       `<button type="button" class="tab${funnelTab === t.id ? " tab--active" : ""}" data-funnel-tab="${t.id}">${t.label}</button>`
   ).join("");
 
-  const list = filteredDeals();
+  const list = filteredDeals(filters);
 
   let board = "";
   if (funnelTab === "active") {
@@ -114,7 +139,7 @@ export function render() {
       <div class="page-head__sub">${list.length} сделок · ${totalSum.toFixed(1)} млн ₸ суммарно</div>
     </div>
     <div class="row" style="gap:8px">
-      <button type="button" class="btn btn--sm" id="resetFilters">Сбросить фильтры</button>
+      ${hasActiveFilters(filters) ? `<button type="button" class="btn btn--sm" id="resetFilters">Сбросить фильтры</button>` : ""}
       <button type="button" class="btn btn--primary btn--sm">+ Новая сделка</button>
     </div>
   </div>
@@ -172,8 +197,9 @@ export function mount() {
     const el = document.getElementById(id);
     if (!el) return;
     el.addEventListener("change", () => {
-      filters[key] = el.value;
-      window.location.hash = "#/funnel";
+      const next = readFiltersFromUrl();
+      next[key] = el.value;
+      writeFiltersToUrl(next);
       import("../router.js").then((r) => r.render());
     });
   };
@@ -183,8 +209,7 @@ export function mount() {
   onChange("fPeriod", "period");
 
   document.getElementById("resetFilters")?.addEventListener("click", () => {
-    filters = { manager: "", source: "", complex: "", period: "all" };
-    window.location.hash = "#/funnel";
+    writeFiltersToUrl({ manager: "", complex: "", source: "", period: "all" });
     import("../router.js").then((r) => r.render());
   });
 
