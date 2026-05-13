@@ -1,6 +1,6 @@
 import * as state from "./state.js";
 import { renderShell } from "./shell.js";
-import { openSearchModal, toggleNotifDropdown, closeNotifDropdown } from "./ui.js";
+import { openSearchModal, toggleNotifDropdown, closeNotifDropdown, toggleProfileDropdown, closeProfileDropdown } from "./ui.js";
 import * as Dashboard from "./screens/dashboard.js";
 import * as Funnel from "./screens/funnel.js";
 import * as Deal from "./screens/deal.js";
@@ -30,28 +30,17 @@ export function render() {
   app.innerHTML = renderShell(inner, route);
 
   closeNotifDropdown();
+  closeProfileDropdown();
   document.getElementById("headerSearchBtn")?.addEventListener("click", () => openSearchModal());
   document.getElementById("headerBellBtn")?.addEventListener("click", (e) => {
     e.stopPropagation();
     toggleNotifDropdown(e.currentTarget);
   });
+  document.getElementById("profileTrigger")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleProfileDropdown(e.currentTarget);
+  });
 
-  const sel = document.getElementById("roleSelect");
-  if (sel) {
-    sel.onchange = () => {
-      const v = sel.value;
-      if (v === "manager" || v === "rop" || v === "owner") {
-        state.setRole(v);
-        window.location.hash = "#/dashboard";
-        render();
-        const header = document.querySelector(".header");
-        if (header) {
-          header.classList.add("is-role-switching");
-          setTimeout(() => header.classList.remove("is-role-switching"), 280);
-        }
-      }
-    };
-  }
 
   const mounts = {
     dashboard: Dashboard.mount,

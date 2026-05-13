@@ -1,5 +1,12 @@
 import { Icon } from "./icons.js";
-import { buildSearchIndex, SEARCH_TYPE_LABEL } from "./data.js";
+import {
+  buildSearchIndex,
+  SEARCH_TYPE_LABEL,
+  userProfile as _userProfile,
+  complexes,
+  STAGES,
+  deals as _dealsList,
+} from "./data.js";
 import * as state from "./state.js";
 
 export function escapeHtml(str) {
@@ -390,9 +397,116 @@ export function toggleNotifDropdown(anchorEl) {
 }
 
 /* ============================================================
+   Profile dropdown (2.5) — мини-меню профиля в шапке
+   ============================================================ */
+let _profileDropdownEl = null;
+
+function _outsideClickProfile(e) {
+  if (!_profileDropdownEl) return;
+  if (_profileDropdownEl.contains(e.target)) return;
+  if (e.target.closest("#profileTrigger")) return;
+  closeProfileDropdown();
+}
+
+function _escProfile(e) {
+  if (e.key === "Escape") closeProfileDropdown();
+}
+
+export function closeProfileDropdown() {
+  if (_profileDropdownEl) {
+    _profileDropdownEl.remove();
+    _profileDropdownEl = null;
+    document.removeEventListener("click", _outsideClickProfile, true);
+    document.removeEventListener("keydown", _escProfile);
+  }
+}
+
+export function toggleProfileDropdown(anchorEl) {
+  if (_profileDropdownEl) {
+    closeProfileDropdown();
+    return;
+  }
+  const role = state.getRole();
+  const p = _userProfile[role];
+
+  const roleBtns = ["manager", "rop", "owner"]
+    .map(
+      (r) => `<button type="button" class="profile-role-btn${r === role ? " profile-role-btn--active" : ""}" data-role-set="${r}">${escapeHtml(roleLabel(r))}</button>`
+    )
+    .join("");
+
+  const kpiHtml = p.kpi
+    .map(
+      (k) => `<div class="profile-kpi">
+        <div class="profile-kpi__label">${escapeHtml(k.label)}</div>
+        <div class="profile-kpi__value mono-num">${escapeHtml(k.value)}</div>
+      </div>`
+    )
+    .join("");
+
+  const wrap = document.createElement("div");
+  wrap.className = "profile-menu";
+  wrap.innerHTML = `
+    <div class="profile-menu__head">
+      ${avatarHtml(p.name, { size: "lg" })}
+      <div>
+        <div class="profile-menu__name">${escapeHtml(p.name)}</div>
+        <div class="profile-menu__role">${escapeHtml(p.role)}</div>
+      </div>
+    </div>
+
+    <div class="profile-menu__section">
+      <div class="profile-menu__section-title">Роль</div>
+      <div class="profile-roles">${roleBtns}</div>
+    </div>
+
+    <div class="profile-menu__section">
+      <div class="profile-menu__section-title">Мои KPI · месяц</div>
+      <div class="profile-kpis">${kpiHtml}</div>
+    </div>
+
+    <div class="profile-menu__foot">
+      <button type="button" class="btn btn--ghost btn--sm" id="profileLogout">${Icon.logout}<span>Выйти</span></button>
+    </div>`;
+  document.body.appendChild(wrap);
+  _profileDropdownEl = wrap;
+
+  const rect = anchorEl.getBoundingClientRect();
+  wrap.style.top = `${rect.bottom + 8}px`;
+  wrap.style.right = `${Math.max(8, window.innerWidth - rect.right)}px`;
+
+  wrap.querySelectorAll("[data-role-set]").forEach((b) => {
+    b.addEventListener("click", () => {
+      const r = b.dataset.roleSet;
+      if (r === "manager" || r === "rop" || r === "owner") {
+        state.setRole(r);
+        closeProfileDropdown();
+        window.location.hash = "#/dashboard";
+        const header = document.querySelector(".header");
+        if (header) {
+          header.classList.add("is-role-switching");
+          setTimeout(() => header.classList.remove("is-role-switching"), 280);
+        }
+        import("./router.js").then((rt) => rt.render());
+      }
+    });
+  });
+
+  wrap.querySelector("#profileLogout")?.addEventListener("click", () => {
+    closeProfileDropdown();
+    showToast("Вы вышли. (демо — сессия сохраняется)");
+    window.location.hash = "#/dashboard";
+  });
+
+  setTimeout(() => {
+    document.addEventListener("click", _outsideClickProfile, true);
+    document.addEventListener("keydown", _escProfile);
+  }, 0);
+}
+
+/* ============================================================
    Quick Actions FAB (2.3) — глобальная кнопка действий
    ============================================================ */
-import { complexes, STAGES, deals as _dealsList } from "./data.js";
 
 let _fabOpen = false;
 

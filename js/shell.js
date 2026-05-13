@@ -1,5 +1,6 @@
 import * as state from "./state.js";
-import { roleLabel, escapeHtml, Icon } from "./ui.js";
+import { roleLabel, escapeHtml, Icon, avatarHtml } from "./ui.js";
+import { userProfile } from "./data.js";
 
 const PAGE_META = {
   dashboard: { title: "Главная", crumbs: "Обзор по вашей роли" },
@@ -78,14 +79,14 @@ export function renderShell(innerHtml, route) {
             ${unreadCount > 0 ? `<span class="notif-bell__badge">${unreadCount > 9 ? "9+" : unreadCount}</span>` : ""}
           </button>
         </div>
-        <div class="role-pill">
-          <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Роль</span>
-          <select id="roleSelect" class="role-pill__select" aria-label="Выбор роли">
-            <option value="manager"${role === "manager" ? " selected" : ""}>${roleLabel("manager")}</option>
-            <option value="rop"${role === "rop" ? " selected" : ""}>${roleLabel("rop")}</option>
-            <option value="owner"${role === "owner" ? " selected" : ""}>${roleLabel("owner")}</option>
-          </select>
-        </div>
+        <button type="button" class="profile-trigger" id="profileTrigger" aria-label="Профиль">
+          ${avatarHtml(userProfile[role].name, { size: "sm" })}
+          <span class="profile-trigger__text">
+            <span class="profile-trigger__name">${escapeHtml(userProfile[role].name)}</span>
+            <span class="profile-trigger__role">${escapeHtml(roleLabel(role))}</span>
+          </span>
+          <span class="profile-trigger__chev">${Icon.chevron}</span>
+        </button>
       </div>
     </header>
     <main class="content">${innerHtml}</main>
