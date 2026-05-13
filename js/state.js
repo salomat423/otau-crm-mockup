@@ -144,7 +144,33 @@ export function appendChat(msg) {
 /* ============================================================
    Notification state (2.2) — мутируем в памяти
    ============================================================ */
-import { notifications as _notifications } from "./data.js";
+import { notifications as _notifications, deals as _deals } from "./data.js";
+
+/* ============================================================
+   Deals — добавление через Quick Action FAB (2.3)
+   ============================================================ */
+/**
+ * @param {{ clientName: string, complexId: string, rooms?: number, amountMln?: number, source?: string, stageId?: string }} input
+ */
+export function addDeal(input) {
+  const d = {
+    id: "deal-" + Date.now(),
+    clientName: input.clientName,
+    complexId: input.complexId || "zhk-dostyk",
+    rooms: input.rooms || 2,
+    amountMln: input.amountMln || 30,
+    managerId: "m1",
+    stageId: input.stageId || "new",
+    ai: "yellow",
+    aiProb: 50,
+    source: input.source || "Сайт",
+    tab: "active",
+    createdDaysAgo: 0,
+    lastTouchDaysAgo: 0,
+  };
+  _deals.unshift(d);
+  return d;
+}
 
 export function getNotifications() {
   return _notifications;

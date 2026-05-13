@@ -389,4 +389,217 @@ export function toggleNotifDropdown(anchorEl) {
   }, 0);
 }
 
+/* ============================================================
+   Quick Actions FAB (2.3) — глобальная кнопка действий
+   ============================================================ */
+import { complexes, STAGES, deals as _dealsList } from "./data.js";
+
+let _fabOpen = false;
+
+function fabHtml() {
+  return `
+    <div class="fab-fan" id="fabFan" aria-hidden="true">
+      <button type="button" class="fab-fan__item" data-fab-action="export">
+        <span class="fab-fan__ico">${Icon.download}</span><span>Экспорт</span>
+      </button>
+      <button type="button" class="fab-fan__item" data-fab-action="call">
+        <span class="fab-fan__ico">${Icon.call}</span><span>Зафиксировать звонок</span>
+      </button>
+      <button type="button" class="fab-fan__item" data-fab-action="task">
+        <span class="fab-fan__ico">${Icon.task}</span><span>Новая задача</span>
+      </button>
+      <button type="button" class="fab-fan__item" data-fab-action="deal">
+        <span class="fab-fan__ico">${Icon.deal}</span><span>Новая сделка</span>
+      </button>
+    </div>
+    <button type="button" class="fab" id="fabMain" aria-label="Быстрые действия">
+      ${Icon.plus}
+    </button>`;
+}
+
+function toggleFab() {
+  const root = document.getElementById("fabRoot");
+  if (!root) return;
+  _fabOpen = !_fabOpen;
+  root.classList.toggle("fab-root--open", _fabOpen);
+}
+
+function closeFab() {
+  const root = document.getElementById("fabRoot");
+  if (!root) return;
+  _fabOpen = false;
+  root.classList.remove("fab-root--open");
+}
+
+function openQuickDealModal() {
+  closeFab();
+  const optsCx = complexes.map((c) => `<option value="${c.id}">${escapeHtml(c.name)}</option>`).join("");
+  const optsStage = STAGES.map((s) => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join("");
+  const body = `
+    <form id="quickDealForm" class="stack" style="gap:14px">
+      <label class="field">
+        <span class="field__label">Имя клиента</span>
+        <input class="input" name="clientName" required placeholder="Например, Айдар Серикбаев" />
+      </label>
+      <div class="grid grid-3" style="gap:12px">
+        <label class="field">
+          <span class="field__label">ЖК</span>
+          <select class="input" name="complexId">${optsCx}</select>
+        </label>
+        <label class="field">
+          <span class="field__label">Комнат</span>
+          <select class="input" name="rooms">
+            <option>1</option><option selected>2</option><option>3</option><option>4</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Этап</span>
+          <select class="input" name="stageId">${optsStage}</select>
+        </label>
+      </div>
+    </form>`;
+  const m = openModal({
+    title: "Новая сделка",
+    body,
+    footer: `<button type="button" class="btn" data-modal-close>Отмена</button>
+             <button type="button" class="btn btn--primary" id="quickDealSubmit">Создать</button>`,
+  });
+  m.el.querySelector("#quickDealSubmit")?.addEventListener("click", () => {
+    const form = m.el.querySelector("#quickDealForm");
+    const data = new FormData(form);
+    const name = String(data.get("clientName") || "").trim();
+    if (!name) {
+      form.querySelector('[name="clientName"]')?.focus();
+      return;
+    }
+    state.addDeal({
+      clientName: name,
+      complexId: String(data.get("complexId") || ""),
+      rooms: Number(data.get("rooms") || 2),
+      stageId: String(data.get("stageId") || "new"),
+    });
+    m.close();
+    showToast("Сделка создана");
+    import("./router.js").then((r) => r.render());
+  });
+}
+
+function openQuickTaskModal() {
+  closeFab();
+  const body = `
+    <form id="quickTaskForm" class="stack" style="gap:14px">
+      <label class="field">
+        <span class="field__label">Заголовок</span>
+        <input class="input" name="title" required placeholder="Например, Перезвонить клиенту" />
+      </label>
+      <div class="grid grid-3" style="gap:12px">
+        <label class="field">
+          <span class="field__label">Срок</span>
+          <input class="input" name="dueDate" placeholder="Завтра / 18 мая" />
+        </label>
+        <label class="field">
+          <span class="field__label">Приоритет</span>
+          <select class="input" name="priority">
+            <option value="low">Низкий</option>
+            <option value="medium" selected>Средний</option>
+            <option value="high">Высокий</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field__label">Источник</span>
+          <input class="input" name="source" value="Quick action" />
+        </label>
+      </div>
+    </form>`;
+  const m = openModal({
+    title: "Новая задача",
+    body,
+    footer: `<button type="button" class="btn" data-modal-close>Отмена</button>
+             <button type="button" class="btn btn--primary" id="quickTaskSubmit">Создать</button>`,
+  });
+  m.el.querySelector("#quickTaskSubmit")?.addEventListener("click", () => {
+    const form = m.el.querySelector("#quickTaskForm");
+    const data = new FormData(form);
+    const title = String(data.get("title") || "").trim();
+    if (!title) {
+      form.querySelector('[name="title"]')?.focus();
+      return;
+    }
+    state.addTask({
+      title,
+      dueDate: String(data.get("dueDate") || "") || undefined,
+      priority: /** @type any */ (String(data.get("priority") || "medium")),
+      source: String(data.get("source") || "Quick action"),
+    });
+    m.close();
+    showToast("Задача создана");
+    import("./router.js").then((r) => r.render());
+  });
+}
+
+function openQuickCallModal() {
+  closeFab();
+  const optsDeals = _dealsList.slice(0, 12)
+    .map((d) => `<option value="${d.id}">${escapeHtml(d.clientName)}</option>`).join("");
+  const body = `
+    <form id="quickCallForm" class="stack" style="gap:14px">
+      <label class="field">
+        <span class="field__label">Сделка</span>
+        <select class="input" name="dealId">${optsDeals}</select>
+      </label>
+      <label class="field">
+        <span class="field__label">Длительность звонка</span>
+        <input class="input" name="duration" placeholder="Напр. 4:32" />
+      </label>
+      <label class="field">
+        <span class="field__label">Заметка</span>
+        <textarea class="input" name="note" rows="3" placeholder="Кратко о разговоре, договорённости..."></textarea>
+      </label>
+    </form>`;
+  const m = openModal({
+    title: "Зафиксировать звонок",
+    body,
+    footer: `<button type="button" class="btn" data-modal-close>Отмена</button>
+             <button type="button" class="btn btn--primary" id="quickCallSubmit">Сохранить</button>`,
+  });
+  m.el.querySelector("#quickCallSubmit")?.addEventListener("click", () => {
+    m.close();
+    showToast("Звонок зафиксирован");
+  });
+}
+
+function handleFabAction(action) {
+  if (action === "deal") openQuickDealModal();
+  else if (action === "task") openQuickTaskModal();
+  else if (action === "call") openQuickCallModal();
+  else if (action === "export") {
+    closeFab();
+    showToast("Экспорт подготовлен");
+  }
+}
+
+export function mountFab() {
+  if (document.getElementById("fabRoot")) return;
+  const root = document.createElement("div");
+  root.id = "fabRoot";
+  root.className = "fab-root";
+  root.innerHTML = fabHtml();
+  document.body.appendChild(root);
+
+  root.querySelector("#fabMain")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleFab();
+  });
+  root.querySelectorAll("[data-fab-action]").forEach((b) => {
+    b.addEventListener("click", () => handleFabAction(b.dataset.fabAction));
+  });
+  document.addEventListener("click", (e) => {
+    if (!_fabOpen) return;
+    if (!root.contains(e.target)) closeFab();
+  });
+  document.addEventListener("keydown", (e) => {
+    if (_fabOpen && e.key === "Escape") closeFab();
+  });
+}
+
 export { Icon };
