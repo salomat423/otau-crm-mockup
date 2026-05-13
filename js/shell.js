@@ -53,7 +53,7 @@ export function renderShell(innerHtml, route) {
   <aside class="sidebar">
     <div class="sidebar__brand">
       <a href="#/dashboard" class="sidebar__logo-link" aria-label="OTAU GROUP — главная">
-        <img src="public/logo.png" alt="OTAU GROUP" class="sidebar__logo" />
+        <img src="assets/logo.png" alt="OTAU GROUP" class="sidebar__logo" />
       </a>
       <div class="sidebar__brand-tag">CRM · Кликабельный макет</div>
     </div>
