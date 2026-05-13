@@ -1,6 +1,6 @@
 import * as state from "./state.js";
 import { renderShell } from "./shell.js";
-import { openSearchModal } from "./ui.js";
+import { openSearchModal, toggleNotifDropdown, closeNotifDropdown } from "./ui.js";
 import * as Dashboard from "./screens/dashboard.js";
 import * as Funnel from "./screens/funnel.js";
 import * as Deal from "./screens/deal.js";
@@ -29,7 +29,12 @@ export function render() {
   if (!app) return;
   app.innerHTML = renderShell(inner, route);
 
+  closeNotifDropdown();
   document.getElementById("headerSearchBtn")?.addEventListener("click", () => openSearchModal());
+  document.getElementById("headerBellBtn")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleNotifDropdown(e.currentTarget);
+  });
 
   const sel = document.getElementById("roleSelect");
   if (sel) {

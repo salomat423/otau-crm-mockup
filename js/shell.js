@@ -33,6 +33,7 @@ function navItems(role) {
 export function renderShell(innerHtml, route) {
   const role = state.getRole();
   const items = navItems(role);
+  const unreadCount = state.getUnreadNotificationCount();
 
   const navHtml = items
     .map((it) => {
@@ -71,6 +72,12 @@ export function renderShell(innerHtml, route) {
           <span class="header-search__text">Поиск...</span>
           <span class="header-search__kbd"><kbd>⌘</kbd><kbd>K</kbd></span>
         </button>
+        <div class="notif-wrap">
+          <button type="button" class="notif-bell" id="headerBellBtn" aria-label="Уведомления">
+            ${Icon.bell}
+            ${unreadCount > 0 ? `<span class="notif-bell__badge">${unreadCount > 9 ? "9+" : unreadCount}</span>` : ""}
+          </button>
+        </div>
         <div class="role-pill">
           <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Роль</span>
           <select id="roleSelect" class="role-pill__select" aria-label="Выбор роли">

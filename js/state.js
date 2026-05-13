@@ -141,6 +141,32 @@ export function appendChat(msg) {
   chatHistory.push(msg);
 }
 
+/* ============================================================
+   Notification state (2.2) — мутируем в памяти
+   ============================================================ */
+import { notifications as _notifications } from "./data.js";
+
+export function getNotifications() {
+  return _notifications;
+}
+
+export function getUnreadNotificationCount() {
+  return _notifications.filter((n) => !n.isRead).length;
+}
+
+/** @param {string} id */
+export function markNotificationRead(id) {
+  const n = _notifications.find((x) => x.id === id);
+  if (n) n.isRead = true;
+}
+
+export function markAllNotificationsRead() {
+  _notifications.forEach((n) => (n.isRead = true));
+}
+
+/* ============================================================
+   Router query (?manager=...&complex=... в hash) — 2.4
+   ============================================================ */
 export function parseRoute() {
   const raw = (window.location.hash || "#/dashboard").replace(/^#/, "");
   const path = raw.startsWith("/") ? raw : "/" + raw;
@@ -149,5 +175,9 @@ export function parseRoute() {
   const name = parts[0] || "dashboard";
   const id = parts[1] || null;
   const id2 = parts[2] || null;
-  return { name, id, id2, path: pathname, search };
+  const query = {};
+  if (search) {
+    new URLSearchParams(search).forEach((v, k) => (query[k] = v));
+  }
+  return { name, id, id2, path: pathname, search, query };
 }

@@ -1,5 +1,6 @@
 import { Icon } from "./icons.js";
 import { buildSearchIndex, SEARCH_TYPE_LABEL } from "./data.js";
+import * as state from "./state.js";
 
 export function escapeHtml(str) {
   return String(str ?? "")
@@ -279,6 +280,113 @@ export function openSearchModal() {
 
   renderResults("");
   setTimeout(() => input.focus(), 30);
+}
+
+/* ============================================================
+   Notification Center dropdown (2.2)
+   ============================================================ */
+let _notifDropdownEl = null;
+
+function notifIcon(type) {
+  if (type === "deal") return Icon.deal;
+  if (type === "task") return Icon.task;
+  if (type === "ai") return Icon.sparkles;
+  if (type === "stage") return Icon.funnel;
+  return Icon.bell;
+}
+
+function notifIconClass(type) {
+  if (type === "deal") return "notif-item__ico--primary";
+  if (type === "task") return "notif-item__ico--warning";
+  if (type === "ai") return "notif-item__ico--info";
+  if (type === "stage") return "notif-item__ico--success";
+  return "notif-item__ico--neutral";
+}
+
+function renderNotifList() {
+  const list = state.getNotifications();
+  if (!list.length) {
+    return emptyState({ icon: Icon.bell, title: "Тихо", hint: "Новых уведомлений нет." });
+  }
+  return list
+    .map(
+      (n) => `
+    <a class="notif-item${n.isRead ? "" : " notif-item--unread"}" data-notif-id="${escapeHtml(n.id)}" href="${escapeHtml(n.href || "#")}">
+      <span class="notif-item__ico ${notifIconClass(n.type)}">${notifIcon(n.type)}</span>
+      <span class="notif-item__text">
+        <span class="notif-item__title">${escapeHtml(n.title)}</span>
+        <span class="notif-item__body">${escapeHtml(n.body)}</span>
+        <span class="notif-item__time">${escapeHtml(n.time)}</span>
+      </span>
+    </a>`
+    )
+    .join("");
+}
+
+export function closeNotifDropdown() {
+  if (_notifDropdownEl) {
+    _notifDropdownEl.remove();
+    _notifDropdownEl = null;
+    document.removeEventListener("click", _outsideClickNotif, true);
+    document.removeEventListener("keydown", _escNotif);
+  }
+}
+
+function _outsideClickNotif(e) {
+  if (!_notifDropdownEl) return;
+  if (_notifDropdownEl.contains(e.target)) return;
+  if (e.target.closest("#headerBellBtn")) return;
+  closeNotifDropdown();
+}
+
+function _escNotif(e) {
+  if (e.key === "Escape") closeNotifDropdown();
+}
+
+export function toggleNotifDropdown(anchorEl) {
+  if (_notifDropdownEl) {
+    closeNotifDropdown();
+    return;
+  }
+  const wrap = document.createElement("div");
+  wrap.className = "notif-dropdown";
+  wrap.innerHTML = `
+    <div class="notif-dropdown__head">
+      <span>Уведомления</span>
+      <button type="button" class="btn btn--ghost btn--sm" id="notifMarkAll">Прочитать всё</button>
+    </div>
+    <div class="notif-dropdown__list" id="notifList">${renderNotifList()}</div>
+    <div class="notif-dropdown__foot">
+      <a href="#/tasks">Открыть все задачи →</a>
+    </div>`;
+  document.body.appendChild(wrap);
+  _notifDropdownEl = wrap;
+
+  const rect = anchorEl.getBoundingClientRect();
+  wrap.style.top = `${rect.bottom + 8}px`;
+  wrap.style.right = `${Math.max(8, window.innerWidth - rect.right)}px`;
+
+  wrap.querySelector("#notifMarkAll")?.addEventListener("click", (e) => {
+    e.preventDefault();
+    state.markAllNotificationsRead();
+    closeNotifDropdown();
+    import("./router.js").then((r) => r.render());
+  });
+
+  wrap.querySelectorAll(".notif-item").forEach((a) => {
+    a.addEventListener("click", () => {
+      state.markNotificationRead(a.dataset.notifId);
+      setTimeout(() => {
+        closeNotifDropdown();
+        import("./router.js").then((r) => r.render());
+      }, 0);
+    });
+  });
+
+  setTimeout(() => {
+    document.addEventListener("click", _outsideClickNotif, true);
+    document.addEventListener("keydown", _escNotif);
+  }, 0);
 }
 
 export { Icon };
