@@ -315,3 +315,73 @@ export function matchAiReply(q) {
     return "Повышение цены на 5% по «Алмалы» в текущей конъюнктуре даст рост выручки только при усилении УТП. Без него прогноз: −10–15% продаж по объекту.";
   return "Я могу разобрать воронку, ЖК, менеджеров, маркетинг и риски. Уточните вопрос — например, «где теряю деньги в воронке» или «какой канал прибыльнее».";
 }
+
+/* ============================================================
+   Поисковый индекс — сделки, клиенты, ЖК, корпуса, квартиры (2.1)
+   ============================================================ */
+export function buildSearchIndex() {
+  const idx = [];
+
+  for (const d of deals) {
+    idx.push({
+      type: "deal",
+      id: d.id,
+      title: d.clientName,
+      sub: `${complexName(d.complexId)} · ${d.rooms}к · ${d.amountMln} млн ₸ · ${managerName(d.managerId)}`,
+      href: `#/deal/${d.id}`,
+    });
+  }
+
+  for (const cx of complexes) {
+    idx.push({
+      type: "complex",
+      id: cx.id,
+      title: cx.name,
+      sub: `${cx.address} · от ${cx.priceFromMln} млн ₸ · ${cx.status}`,
+      href: `#/catalog/${cx.id}`,
+    });
+  }
+
+  for (const b of buildings) {
+    const cx = complexes.find((x) => x.id === b.complexId);
+    idx.push({
+      type: "building",
+      id: b.id,
+      title: `${cx ? cx.name + " · " : ""}${b.name}`,
+      sub: "Корпус · шахматка квартир",
+      href: `#/catalog/${b.complexId}/${b.id}`,
+    });
+  }
+
+  for (const u of units) {
+    const b = buildings.find((x) => x.id === u.buildingId);
+    const cx = b ? complexes.find((x) => x.id === b.complexId) : null;
+    idx.push({
+      type: "unit",
+      id: u.id,
+      title: `№${u.no} · ${u.rooms}к · ${u.area} м²`,
+      sub: `${cx ? cx.name + " · " : ""}${b ? b.name + " · " : ""}${u.priceMln} млн ₸ · ${u.status}`,
+      href: b ? `#/catalog/${b.complexId}/${b.id}` : `#/catalog`,
+    });
+  }
+
+  for (const m of managers) {
+    idx.push({
+      type: "manager",
+      id: m.id,
+      title: m.name,
+      sub: `Менеджер · балл ${m.score} · сделок: ${m.deals}`,
+      href: `#/funnel?manager=${m.id}`,
+    });
+  }
+
+  return idx;
+}
+
+export const SEARCH_TYPE_LABEL = {
+  deal: "Сделки",
+  complex: "ЖК",
+  building: "Корпуса",
+  unit: "Квартиры",
+  manager: "Менеджеры",
+};

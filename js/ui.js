@@ -1,4 +1,5 @@
 import { Icon } from "./icons.js";
+import { buildSearchIndex, SEARCH_TYPE_LABEL } from "./data.js";
 
 export function escapeHtml(str) {
   return String(str ?? "")
@@ -141,6 +142,143 @@ export function emptyState({ icon, title, hint, action } = { title: "" }) {
     ${hint ? `<div class="empty-state__hint">${hint}</div>` : ""}
     ${action ? `<div class="empty-state__action">${action}</div>` : ""}
   </div>`;
+}
+
+/* ============================================================
+   Глобальный поиск Cmd+K / Ctrl+K (2.1)
+   ============================================================ */
+let _searchOpen = false;
+
+function typeIcon(t) {
+  if (t === "deal") return Icon.deal;
+  if (t === "complex") return Icon.catalog;
+  if (t === "building") return Icon.building;
+  if (t === "unit") return Icon.briefcase;
+  if (t === "manager") return Icon.user;
+  return Icon.search;
+}
+
+export function openSearchModal() {
+  if (_searchOpen) return;
+  _searchOpen = true;
+
+  const index = buildSearchIndex();
+  const backdrop = document.createElement("div");
+  backdrop.className = "modal-backdrop search-backdrop";
+  backdrop.innerHTML = `
+    <div class="search-modal" role="dialog" aria-modal="true" aria-label="Глобальный поиск">
+      <div class="search-input-row">
+        <span class="search-input-icon">${Icon.search}</span>
+        <input type="text" class="search-input" id="globalSearchInput" placeholder="Поиск: клиент, ЖК, квартира, менеджер..." autocomplete="off" />
+        <kbd class="search-kbd">ESC</kbd>
+      </div>
+      <div class="search-results" id="globalSearchResults"></div>
+      <div class="search-foot">
+        <span><kbd class="search-kbd">↑↓</kbd> навигация</span>
+        <span><kbd class="search-kbd">⏎</kbd> открыть</span>
+        <span><kbd class="search-kbd">ESC</kbd> закрыть</span>
+      </div>
+    </div>`;
+  document.body.appendChild(backdrop);
+
+  const input = backdrop.querySelector("#globalSearchInput");
+  const resultsEl = backdrop.querySelector("#globalSearchResults");
+  let currentResults = [];
+  let activeIdx = 0;
+
+  function renderResults(q) {
+    const norm = q.trim().toLowerCase();
+    if (!norm) {
+      currentResults = index.slice(0, 8);
+    } else {
+      currentResults = index.filter((r) => {
+        const hay = (r.title + " " + (r.sub || "")).toLowerCase();
+        return hay.includes(norm);
+      }).slice(0, 30);
+    }
+    activeIdx = 0;
+    if (currentResults.length === 0) {
+      resultsEl.innerHTML = `<div class="search-empty">${escapeHtml(`Ничего не нашлось по «${q}»`)}</div>`;
+      return;
+    }
+    const groups = {};
+    currentResults.forEach((r) => {
+      (groups[r.type] = groups[r.type] || []).push(r);
+    });
+    const order = ["deal", "complex", "building", "unit", "manager"];
+    let html = "";
+    let flatIdx = 0;
+    for (const t of order) {
+      const items = groups[t];
+      if (!items) continue;
+      html += `<div class="search-group">
+        <div class="search-group__title">${escapeHtml(SEARCH_TYPE_LABEL[t] || t)}</div>
+        ${items.map((r) => {
+          const i = flatIdx++;
+          return `<a class="search-item" data-idx="${i}" href="${r.href}">
+            <span class="search-item__icon">${typeIcon(r.type)}</span>
+            <span class="search-item__text">
+              <span class="search-item__title">${escapeHtml(r.title)}</span>
+              ${r.sub ? `<span class="search-item__sub">${escapeHtml(r.sub)}</span>` : ""}
+            </span>
+            <span class="search-item__chev">${Icon.chevron}</span>
+          </a>`;
+        }).join("")}
+      </div>`;
+    }
+    resultsEl.innerHTML = html;
+    updateActive();
+  }
+
+  function updateActive() {
+    resultsEl.querySelectorAll(".search-item").forEach((el, i) => {
+      el.classList.toggle("search-item--active", i === activeIdx);
+    });
+    const el = resultsEl.querySelector(`.search-item[data-idx="${activeIdx}"]`);
+    el?.scrollIntoView({ block: "nearest" });
+  }
+
+  function close() {
+    _searchOpen = false;
+    backdrop.remove();
+    document.removeEventListener("keydown", onKey);
+  }
+
+  function go(idx) {
+    const r = currentResults[idx];
+    if (!r) return;
+    close();
+    window.location.hash = r.href.replace(/^#/, "");
+  }
+
+  function onKey(e) {
+    if (e.key === "Escape") { e.preventDefault(); close(); return; }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      activeIdx = Math.min(currentResults.length - 1, activeIdx + 1);
+      updateActive();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      activeIdx = Math.max(0, activeIdx - 1);
+      updateActive();
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      go(activeIdx);
+    }
+  }
+
+  backdrop.addEventListener("click", (e) => { if (e.target === backdrop) close(); });
+  resultsEl.addEventListener("click", (e) => {
+    const a = e.target.closest(".search-item");
+    if (!a) return;
+    e.preventDefault();
+    go(Number(a.dataset.idx));
+  });
+  document.addEventListener("keydown", onKey);
+  input.addEventListener("input", () => renderResults(input.value));
+
+  renderResults("");
+  setTimeout(() => input.focus(), 30);
 }
 
 export { Icon };

@@ -182,6 +182,48 @@
   gap: 10px;
 }
 
+/* Кнопка-триггер поиска в шапке (2.1) */
+.header-search {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px 6px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 500;
+  min-width: 200px;
+  transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease),
+    color var(--t-fast) var(--ease);
+}
+.header-search:hover {
+  background: var(--bg-surface);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+.header-search__icon { display: inline-flex; }
+.header-search__icon svg { width: 14px; height: 14px; }
+.header-search__text { flex: 1; text-align: left; }
+.header-search__kbd { display: inline-flex; gap: 2px; margin-left: auto; }
+.header-search__kbd kbd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  line-height: 1;
+}
+
+@media (max-width: 700px) {
+  .header-search { min-width: 0; }
+  .header-search__text, .header-search__kbd { display: none; }
+}
+
 .role-pill {
   display: inline-flex;
   align-items: center;

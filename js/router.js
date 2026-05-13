@@ -1,5 +1,6 @@
 import * as state from "./state.js";
 import { renderShell } from "./shell.js";
+import { openSearchModal } from "./ui.js";
 import * as Dashboard from "./screens/dashboard.js";
 import * as Funnel from "./screens/funnel.js";
 import * as Deal from "./screens/deal.js";
@@ -27,6 +28,8 @@ export function render() {
   const app = document.getElementById("app");
   if (!app) return;
   app.innerHTML = renderShell(inner, route);
+
+  document.getElementById("headerSearchBtn")?.addEventListener("click", () => openSearchModal());
 
   const sel = document.getElementById("roleSelect");
   if (sel) {

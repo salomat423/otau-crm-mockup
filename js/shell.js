@@ -66,6 +66,11 @@ export function renderShell(innerHtml, route) {
         <div class="header__crumbs">${escapeHtml(meta.crumbs)}</div>
       </div>
       <div class="header__actions">
+        <button type="button" class="header-search" id="headerSearchBtn" aria-label="Глобальный поиск (Cmd+K)">
+          <span class="header-search__icon">${Icon.search}</span>
+          <span class="header-search__text">Поиск...</span>
+          <span class="header-search__kbd"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </button>
         <div class="role-pill">
           <span style="font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Роль</span>
           <select id="roleSelect" class="role-pill__select" aria-label="Выбор роли">
