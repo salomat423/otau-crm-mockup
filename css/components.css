@@ -1092,6 +1092,199 @@
   justify-content: space-between;
 }
 
+/* ========== Team по этапам воронки (раздел «Команда») ========== */
+.team-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.team-stage {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px 16px 12px;
+  box-shadow: var(--shadow-xs);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Цветной верхний акцент-полоска по тону этапа */
+.team-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: var(--kpi-strip-neutral);
+  opacity: 0.95;
+}
+.team-stage--primary::before { background: var(--kpi-strip-primary); }
+.team-stage--info::before    { background: var(--kpi-strip-primary); }
+.team-stage--warning::before { background: var(--kpi-strip-warning); }
+.team-stage--danger::before  { background: var(--kpi-strip-danger);  }
+.team-stage--success::before { background: var(--kpi-strip-success); }
+
+.team-stage__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.team-stage__eyebrow {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.team-stage__title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+
+.team-stage__meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+.team-stage__metric .muted { color: var(--text-muted); margin-right: 4px; }
+.team-stage__metric b { color: var(--text); font-weight: 700; }
+
+.team-stage__people {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.team-mgr {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-muted);
+  text-decoration: none;
+  color: var(--text);
+  transition: background var(--t-fast) var(--ease),
+    border-color var(--t-fast) var(--ease),
+    transform var(--t-fast) var(--ease),
+    box-shadow var(--t-fast) var(--ease);
+}
+.team-mgr:hover {
+  background: var(--bg-surface);
+  border-color: rgba(31, 79, 168, 0.20);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+.team-mgr__info { flex: 1; min-width: 0; }
+.team-mgr__name { font-size: 13.5px; font-weight: 600; }
+.team-mgr__sub  { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+
+/* AI-инсайты по менеджеру */
+.ins-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ins {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-muted);
+}
+.ins__ico {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.ins__ico svg { width: 16px; height: 16px; }
+.ins__title { font-size: 13.5px; font-weight: 700; }
+.ins__body  { font-size: 12.5px; color: var(--text-secondary); margin-top: 4px; line-height: 1.5; }
+
+.ins--good   { background: var(--success-soft); border-color: rgba(31, 138, 82, 0.18); }
+.ins--good .ins__ico   { background: rgba(31, 138, 82, 0.15); color: var(--success-strong); }
+.ins--bad    { background: var(--danger-soft);  border-color: rgba(200, 38, 30, 0.18); }
+.ins--bad .ins__ico    { background: rgba(200, 38, 30, 0.15); color: var(--danger-strong); }
+.ins--tip    { background: var(--primary-50);   border-color: rgba(31, 79, 168, 0.18); }
+.ins--tip .ins__ico    { background: rgba(31, 79, 168, 0.15); color: var(--primary-700); }
+.ins--neutral { background: var(--neutral-100); border-color: var(--neutral-200); }
+.ins--neutral .ins__ico { background: var(--neutral-200); color: var(--neutral-700); }
+
+/* Микро-воронка менеджера */
+.mfunnel {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.mfunnel__row {
+  display: grid;
+  grid-template-columns: 100px 1fr 32px;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+.mfunnel__label { color: var(--text-muted); }
+.mfunnel__val   { text-align: right; font-weight: 700; }
+.mfunnel__bar {
+  height: 8px;
+  background: var(--neutral-100);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.mfunnel__bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
+  border-radius: inherit;
+  transform-origin: left center;
+  animation: fillBar 700ms var(--ease) backwards;
+}
+
+/* Списки-плюсы/минусы */
+.bullet-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bullet-list li {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+.bullet {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 7px;
+  background: var(--neutral-300);
+}
+.bullet--good { background: var(--success); }
+.bullet--bad  { background: var(--accent-red-500); }
+
 /* ========== Profile trigger + dropdown — 2.5 ========== */
 .profile-trigger {
   display: inline-flex;

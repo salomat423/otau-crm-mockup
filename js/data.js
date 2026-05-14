@@ -387,6 +387,175 @@ export const SEARCH_TYPE_LABEL = {
 };
 
 /* ============================================================
+   Team по этапам воронки (раздел «Команда»)
+   ============================================================ */
+export const funnelTeams = [
+  {
+    id: "callcenter",
+    name: "Колл-центр",
+    sub: "Первый контакт · квалификация",
+    stages: ["new", "contact", "qualify"],
+    color: "primary",
+    managerIds: ["m4", "m5"],
+  },
+  {
+    id: "presentation",
+    name: "Презентация",
+    sub: "Встреча и показ объекта",
+    stages: ["presentation"],
+    color: "info",
+    managerIds: ["m1", "m6", "m8"],
+  },
+  {
+    id: "dozhim",
+    name: "Дожим",
+    sub: "Возражения и бронирование",
+    stages: ["objections", "booking"],
+    color: "warning",
+    managerIds: ["m2", "m3"],
+  },
+  {
+    id: "contract",
+    name: "Договор",
+    sub: "Закрытие сделки и оплата",
+    stages: ["contract"],
+    color: "success",
+    managerIds: ["m1", "m7"],
+  },
+];
+
+/** Статистика по менеджерам за 3 периода (мок) */
+export const managerStats = {
+  m1: {
+    day:   { leads: 3, calls: 14, presentations: 2, deals: 1, revenueMln: 42,  conv: 33, score: 9.0 },
+    week:  { leads: 19, calls: 78, presentations: 9, deals: 3, revenueMln: 118, conv: 28, score: 9.1 },
+    month: { leads: 71, calls: 312, presentations: 34, deals: 11, revenueMln: 462, conv: 24, score: 9.1 },
+    funnel: { contact: 19, qualify: 14, presentation: 9, objections: 6, booking: 4, contract: 3 },
+    strengths: ["Высокая конверсия презентация→бронь", "Соблюдение SLA первого ответа", "Чистые финальные предложения"],
+    weaknesses: [],
+    tone: "strong",
+  },
+  m2: {
+    day:   { leads: 2, calls: 8, presentations: 1, deals: 0, revenueMln: 0, conv: 12, score: 6.2 },
+    week:  { leads: 12, calls: 41, presentations: 4, deals: 1, revenueMln: 31, conv: 18, score: 6.3 },
+    month: { leads: 48, calls: 182, presentations: 15, deals: 4, revenueMln: 128, conv: 16, score: 6.2 },
+    funnel: { contact: 12, qualify: 8, presentation: 4, objections: 6, booking: 1, contract: 0 },
+    strengths: ["Хорошо квалифицирует входящие"],
+    weaknesses: [
+      "Часто срывается этап «Возражения»: 60% сделок зависают",
+      "Длинная пауза перед предложением брони — клиенты остывают",
+      "Не использует кейсы по похожим объектам в презентации",
+    ],
+    tone: "weak",
+  },
+  m3: {
+    day:   { leads: 1, calls: 6, presentations: 1, deals: 0, revenueMln: 0,  conv: 10, score: 5.9 },
+    week:  { leads: 9,  calls: 33, presentations: 3, deals: 1, revenueMln: 24, conv: 14, score: 5.9 },
+    month: { leads: 36, calls: 134, presentations: 11, deals: 2, revenueMln: 72, conv: 12, score: 5.8 },
+    funnel: { contact: 9, qualify: 6, presentation: 3, objections: 4, booking: 1, contract: 0 },
+    strengths: ["Дисциплина по записи звонков"],
+    weaknesses: [
+      "Низкая конверсия лид→презентация — нужен скрипт по объекту",
+      "Слабая работа с возражениями по цене",
+      "Не дожимает на действие в конце разговора",
+    ],
+    tone: "weak",
+  },
+  m4: {
+    day:   { leads: 4, calls: 22, presentations: 0, deals: 0, revenueMln: 0,  conv: 0,  score: 7.4 },
+    week:  { leads: 26, calls: 121, presentations: 0, deals: 0, revenueMln: 0,  conv: 0, score: 7.4 },
+    month: { leads: 98, calls: 478, presentations: 0, deals: 0, revenueMln: 0,  conv: 0, score: 7.4 },
+    funnel: { contact: 26, qualify: 22, presentation: 0, objections: 0, booking: 0, contract: 0 },
+    strengths: ["Стабильное число касаний", "Хороший SLA первого ответа"],
+    weaknesses: ["Слишком долго удерживает лиды в «квалификации» — теряется до 25%"],
+    tone: "mixed",
+  },
+  m5: {
+    day:   { leads: 5, calls: 28, presentations: 0, deals: 0, revenueMln: 0, conv: 0, score: 7.8 },
+    week:  { leads: 31, calls: 148, presentations: 0, deals: 0, revenueMln: 0, conv: 0, score: 7.8 },
+    month: { leads: 122, calls: 569, presentations: 0, deals: 0, revenueMln: 0, conv: 0, score: 7.8 },
+    funnel: { contact: 31, qualify: 26, presentation: 0, objections: 0, booking: 0, contract: 0 },
+    strengths: ["Лидер по объёму касаний", "Корректная передача в презентацию"],
+    weaknesses: ["В среду-четверг проседает конверсия — стоит разобрать дисциплину"],
+    tone: "strong",
+  },
+  m6: {
+    day:   { leads: 2, calls: 11, presentations: 2, deals: 1, revenueMln: 36, conv: 24, score: 8.4 },
+    week:  { leads: 14, calls: 62, presentations: 9, deals: 3, revenueMln: 109, conv: 26, score: 8.4 },
+    month: { leads: 56, calls: 248, presentations: 32, deals: 9, revenueMln: 358, conv: 22, score: 8.4 },
+    funnel: { contact: 14, qualify: 11, presentation: 9, objections: 5, booking: 4, contract: 3 },
+    strengths: ["Чистая работа с возражениями", "Высокая удовлетворённость клиентов"],
+    weaknesses: ["Иногда «доедает» бронь Артура — стоит передавать раньше"],
+    tone: "strong",
+  },
+  m7: {
+    day:   { leads: 1, calls: 5, presentations: 1, deals: 1, revenueMln: 30, conv: 18, score: 6.8 },
+    week:  { leads: 7, calls: 28, presentations: 4, deals: 1, revenueMln: 30, conv: 14, score: 6.8 },
+    month: { leads: 28, calls: 119, presentations: 16, deals: 4, revenueMln: 152, conv: 14, score: 6.8 },
+    funnel: { contact: 7, qualify: 5, presentation: 4, objections: 3, booking: 2, contract: 1 },
+    strengths: ["Аккуратно ведёт документы"],
+    weaknesses: [
+      "Не использует кейсы похожих сделок при дожиме",
+      "Слабая фиксация результатов в CRM — теряется контекст",
+    ],
+    tone: "mixed",
+  },
+  m8: {
+    day:   { leads: 2, calls: 12, presentations: 1, deals: 0, revenueMln: 0, conv: 12, score: 7.1 },
+    week:  { leads: 11, calls: 54, presentations: 6, deals: 2, revenueMln: 64, conv: 18, score: 7.1 },
+    month: { leads: 42, calls: 211, presentations: 21, deals: 5, revenueMln: 178, conv: 18, score: 7.1 },
+    funnel: { contact: 11, qualify: 8, presentation: 6, objections: 3, booking: 2, contract: 2 },
+    strengths: ["Хорошая презентация — клиенты возвращаются"],
+    weaknesses: ["Затягивает с предложением о бронировании", "Не уточняет бюджет на ранних этапах"],
+    tone: "mixed",
+  },
+};
+
+/** AI-рекомендации именно по менеджеру — мок ИИ-разбора */
+export const managerInsights = {
+  m1: [
+    { tone: "strong", title: "Эталон по «мягкому закрытию»", body: "В 8 из 10 презентаций предлагает забронировать в конце встречи. Конверсия презентация→бронь — 64% (отдел: 42%)." },
+    { tone: "strong", title: "Чистый SLA", body: "Среднее время ответа на лид — 4 минуты. Стабильно ниже нормы (10 мин)." },
+    { tone: "tip",    title: "Тиражируем на команду",   body: "Записать обучающий разбор по работе с возражением «дорого» — техника применима для m2/m3." },
+  ],
+  m2: [
+    { tone: "weak",   title: "60% сделок зависают на этапе «Возражения»",
+      body: "Главная причина по 12 разборам ИИ: нет конкретного предложения после возражения — клиент уходит «подумать»." },
+    { tone: "weak",   title: "Презентации без кейсов",  body: "В 9 из 10 встреч не упоминает похожие сделки/планировки — снижается доверие к экспертизе." },
+    { tone: "tip",    title: "Парный разбор с m1",      body: "Назначить 1-2 совместные презентации с m1 и зафиксировать чек-лист закрытия." },
+  ],
+  m3: [
+    { tone: "weak",   title: "Конверсия лид→презентация — 14%",
+      body: "При среднем по отделу 28%. ИИ слышит, что менеджер часто заканчивает разговор без явного приглашения на показ." },
+    { tone: "weak",   title: "Возражения по цене",      body: "В 7 из 10 случаев менеджер соглашается с возражением. Нужны фразы переосмысления стоимости." },
+    { tone: "tip",    title: "Скрипты по объектам",     body: "Закрепить за менеджером ЖК «Алмалы» и подготовить скрипт по выгоде ставки." },
+  ],
+  m4: [
+    { tone: "mixed",  title: "Дольше нормы в «квалификации»",
+      body: "Средняя задержка перед передачей в презентацию — 3.4 дня (норма 1.5). Теряется до 25% лидов." },
+    { tone: "strong", title: "Касания стабильно высокие", body: "В топ-3 по числу звонков и сообщений за неделю." },
+  ],
+  m5: [
+    { tone: "strong", title: "Лидер по объёму касаний",  body: "Лучший показатель в отделе по числу первых ответов и быстрой квалификации." },
+    { tone: "tip",    title: "Дисциплина среды-четверга", body: "В эти дни проседает количество звонков на 18% — стоит проверить нагрузку или ввести напоминания." },
+  ],
+  m6: [
+    { tone: "strong", title: "Сильный закрывающий менеджер", body: "Высокий процент CSI и доля повторных рекомендаций — стоит подключать к VIP-клиентам." },
+    { tone: "tip",    title: "Не «доедайте» бронь",       body: "ИИ слышит, что в 3 сделках месяца сама делает оформление вместо менеджера по договорам. Высвободит время." },
+  ],
+  m7: [
+    { tone: "mixed",  title: "Дожим без кейсов",        body: "В 6 из 10 закрытий не использует кейсы похожих сделок — конверсия дожим→договор просела на 8 п.п." },
+    { tone: "weak",   title: "Фиксация в CRM",          body: "У 30% сделок отсутствует резюме разговора. Теряется контекст для следующего касания." },
+    { tone: "tip",    title: "Шаблон финального письма", body: "Подключить шаблон с резюме встречи и предложением — повысит CSI." },
+  ],
+  m8: [
+    { tone: "strong", title: "Сильная презентация",     body: "Клиенты возвращаются на показ повторно. Высокая глубина встречи." },
+    { tone: "weak",   title: "Поздно про бронь",        body: "Среднее время до предложения брони на встрече — 47 мин (норма 25 мин)." },
+    { tone: "tip",    title: "Уточнение бюджета",       body: "Внедрить чек-лист «бюджет / срок / трейд-ин» на 5-й минуте презентации." },
+  ],
+};
+
+/* ============================================================
    User profile (по ролям) — для мини-меню профиля (2.5)
    ============================================================ */
 export const userProfile = {

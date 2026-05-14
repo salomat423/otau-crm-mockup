@@ -11,6 +11,7 @@ const PAGE_META = {
   "ai-control": { title: "ИИ-контроль", crumbs: "Команда и эталонные сценарии" },
   "ai-advisor": { title: "ИИ-советник", crumbs: "Инсайты, чат, голосовой брифинг" },
   tasks: { title: "Задачи", crumbs: "Создано из инсайтов и рекомендаций" },
+  team: { title: "Команда", crumbs: "Менеджеры по этапам воронки" },
 };
 
 function navItems(role) {
@@ -21,8 +22,14 @@ function navItems(role) {
     { key: "catalog", href: "#/catalog", label: "Каталог", icon: Icon.catalog },
   ];
   if (role === "manager") items.push({ key: "growth", href: "#/growth", label: "Моё развитие", icon: Icon.growth });
-  if (role === "rop") items.push({ key: "ai-control", href: "#/ai-control", label: "ИИ-контроль", icon: Icon.shield });
-  if (role === "owner") items.push({ key: "ai-advisor", href: "#/ai-advisor", label: "ИИ-советник", icon: Icon.sparkles });
+  if (role === "rop") {
+    items.push({ key: "team", href: "#/team", label: "Команда", icon: Icon.user });
+    items.push({ key: "ai-control", href: "#/ai-control", label: "ИИ-контроль", icon: Icon.shield });
+  }
+  if (role === "owner") {
+    items.push({ key: "team", href: "#/team", label: "Команда", icon: Icon.user });
+    items.push({ key: "ai-advisor", href: "#/ai-advisor", label: "ИИ-советник", icon: Icon.sparkles });
+  }
   items.push({ key: "tasks", href: "#/tasks", label: "Задачи", icon: Icon.task });
   return items;
 }

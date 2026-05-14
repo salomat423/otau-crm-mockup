@@ -9,6 +9,7 @@ import * as Growth from "./screens/growth.js";
 import * as AiControl from "./screens/aiControl.js";
 import * as AiAdvisor from "./screens/aiAdvisor.js";
 import * as Tasks from "./screens/tasks.js";
+import * as Team from "./screens/team.js";
 
 export function render() {
   const route = state.parseRoute();
@@ -23,6 +24,7 @@ export function render() {
     case "ai-control":inner = AiControl.render(); break;
     case "ai-advisor":inner = AiAdvisor.render(); break;
     case "tasks":     inner = Tasks.render(); break;
+    case "team":      inner = Team.render(route.id); break;
   }
 
   const app = document.getElementById("app");
@@ -51,6 +53,7 @@ export function render() {
     "ai-control": AiControl.mount,
     "ai-advisor": AiAdvisor.mount,
     tasks:     Tasks.mount,
+    team:      Team.mount,
   };
   mounts[route.name]?.();
 }
